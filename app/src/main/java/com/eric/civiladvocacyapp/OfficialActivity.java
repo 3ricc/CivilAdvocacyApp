@@ -33,8 +33,6 @@ public class OfficialActivity extends AppCompatActivity {
     private ImageView official_image;
     private ImageView party_icon;
 
-    private static final String androidURL = "https://developer.android.com";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,61 +62,61 @@ public class OfficialActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if(intent.hasExtra("POLITICIAN")){
+        if(intent.hasExtra("POLITICIAN")) {
             person = (Politician) intent.getSerializableExtra("POLITICIAN");
-        }
 
-        //setting the listeners here
-        facebook.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("button", "facebook!");
+
+            //setting the listeners here
+            facebook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("button", "facebook!");
+                }
+            });
+            twitter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("button", "twitter!");
+                }
+            });
+            youtube.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("button", "youtube!");
+                }
+            });
+
+            name.setText(person.getName());
+            party.setText(person.getParty());
+            office.setText(person.getOffice());
+
+            info1Title.setText("Address:");
+            info1Desc.setText(person.getAddress());
+            info2Title.setText("Phone:");
+            info2Desc.setText(person.getPhone());
+            info3Title.setText("Email:");
+            info3Desc.setText(person.getEmail());
+            info4Title.setText("Website:");
+            info4Desc.setText(person.getWebsite());
+
+            if (person.getAddress().isEmpty()) {
+                info1Title.setVisibility(View.GONE);
+                info1Desc.setVisibility(View.GONE);
             }
-        });
-        twitter.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("button", "twitter!");
+            if (person.getPhone().isEmpty()) {
+                info2Title.setVisibility(View.GONE);
+                info2Desc.setVisibility(View.GONE);
             }
-        });
-        youtube.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Log.d("button", "youtube!");
+            if (person.getEmail().isEmpty()) {
+                info3Title.setVisibility(View.GONE);
+                info3Desc.setVisibility(View.GONE);
             }
-        });
+            if (person.getWebsite().isEmpty()) {
+                info4Title.setVisibility(View.GONE);
+                info4Desc.setVisibility(View.GONE);
+            }
 
-        name.setText(person.getName());
-        party.setText(person.getParty());
-        office.setText(person.getOffice());
-
-        info1Title.setText("Address:");
-        info1Desc.setText(person.getAddress());
-        info2Title.setText("Phone:");
-        info2Desc.setText(person.getPhone());
-        info3Title.setText("Email:");
-        info3Desc.setText(person.getEmail());
-        info4Title.setText("Website:");
-        info4Desc.setText(person.getWebsite());
-
-        if(person.getAddress().isEmpty()){
-            info1Title.setVisibility(View.GONE);
-            info1Desc.setVisibility(View.GONE);
         }
-        if(person.getPhone().isEmpty()){
-            info2Title.setVisibility(View.GONE);
-            info2Desc.setVisibility(View.GONE);
-        }
-        if(person.getEmail().isEmpty()){
-            info3Title.setVisibility(View.GONE);
-            info3Desc.setVisibility(View.GONE);
-        }
-        if(person.getWebsite().isEmpty()){
-            info4Title.setVisibility(View.GONE);
-            info4Desc.setVisibility(View.GONE);
-        }
-
-
 
 
 
