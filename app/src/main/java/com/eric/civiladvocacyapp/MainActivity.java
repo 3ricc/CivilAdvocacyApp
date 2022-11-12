@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RecyclerView recyclerView;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String locationString = "Unspecified Location";
 
     private TextView address;
+
+    //i typed this line on a laptop
 
 
     @Override
