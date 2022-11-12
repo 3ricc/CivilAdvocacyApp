@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class PoliticianViewHolder extends RecyclerView.ViewHolder{
 
-     TextView party;
+     TextView office;
      TextView name;
      ImageView image;
 
     public PoliticianViewHolder(@NonNull View itemView) {
         super(itemView);
-        party = itemView.findViewById(R.id.view_office);
+        office = itemView.findViewById(R.id.view_office);
         name = itemView.findViewById(R.id.view_name);
         image = itemView.findViewById(R.id.view_image);
     }

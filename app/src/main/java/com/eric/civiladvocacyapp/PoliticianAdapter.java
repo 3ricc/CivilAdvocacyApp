@@ -33,9 +33,9 @@ public class PoliticianAdapter extends RecyclerView.Adapter<PoliticianViewHolder
     @Override
     public void onBindViewHolder(@NonNull PoliticianViewHolder holder, int position) {
         Politician person = pList.get(position);
-        holder.party.setText(person.getParty());
+        holder.office.setText(person.getOffice());
         holder.name.setText(person.getName());
-        holder.image.setImageResource(0); //FIX THIS SHIT
+        //holder.image.setImageResource(0); //FIX THIS SHIT
 
     }
 

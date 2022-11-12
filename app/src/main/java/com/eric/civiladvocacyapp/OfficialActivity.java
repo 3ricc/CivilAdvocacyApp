@@ -60,44 +60,67 @@ public class OfficialActivity extends AppCompatActivity {
         official_image = findViewById(R.id.official_picture);
         party_icon = findViewById(R.id.party_logo);
 
+
         Intent intent = getIntent();
 
         if(intent.hasExtra("POLITICIAN")) {
             person = (Politician) intent.getSerializableExtra("POLITICIAN");
+            Bundle extras = intent.getExtras();
+            if (extras != null){
+                location.setText(extras.getString("LOCATION"));
+            }
+
 
 
             //setting the listeners here
-            facebook.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("button", "facebook!");
-                }
-            });
-            twitter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("button", "twitter!");
-                }
-            });
-            youtube.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("button", "youtube!");
-                }
-            });
+            if(!person.getFacebookLink().isEmpty()){
+                facebook.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("button", "facebook!");
+                    }
+                });
+
+            }
+            else{
+                facebook.setVisibility(View.INVISIBLE);
+            }
+
+            if(!person.getTwitterLink().isEmpty()){
+                twitter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("button", "twitter!");
+                    }
+                });
+
+            }
+            else{
+                twitter.setVisibility(View.INVISIBLE);
+            }
+
+            if(!person.getYoutubeLink().isEmpty()){
+                youtube.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("button", "youtube!");
+                    }
+                });
+            }
+            else{
+                youtube.setVisibility(View.INVISIBLE);
+            }
 
             name.setText(person.getName());
             party.setText(person.getParty());
             office.setText(person.getOffice());
 
-            info1Title.setText("Address:");
             info1Desc.setText(person.getAddress());
-            info2Title.setText("Phone:");
             info2Desc.setText(person.getPhone());
-            info3Title.setText("Email:");
             info3Desc.setText(person.getEmail());
-            info4Title.setText("Website:");
             info4Desc.setText(person.getWebsite());
+
+
 
             if (person.getAddress().isEmpty()) {
                 info1Title.setVisibility(View.GONE);
@@ -121,6 +144,13 @@ public class OfficialActivity extends AppCompatActivity {
 
 
 
+    }
+
+    public void onImageClick(View v){
+        Intent intent = new Intent(this, PhotoActivity.class);
+        intent.putExtra("POLITICIAN", person);
+        intent.putExtra("LOCATION", location.getText().toString());
+        startActivity(intent);
     }
 
 

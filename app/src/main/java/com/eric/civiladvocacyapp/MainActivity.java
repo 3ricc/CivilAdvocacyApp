@@ -1,24 +1,45 @@
 package com.eric.civiladvocacyapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RecyclerView recyclerView;
     private PoliticianAdapter politicianAdapter;
     private final ArrayList<Politician> politicianList = new ArrayList<>();
+
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    private static final int LOCATION_REQUEST = 111;
+
+    private static String locationString = "Unspecified Location";
 
     private TextView address;
 
@@ -27,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        determineLocation();
 
         recyclerView = findViewById(R.id.politicianView);
         politicianAdapter = new PoliticianAdapter(politicianList , this);
@@ -67,32 +91,103 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = new Intent(this, OfficialActivity.class);
         intent.putExtra("POLITICIAN", p);
+        intent.putExtra("LOCATION", address.getText().toString());
         startActivity(intent);
 
     }
 
     private void makeDummyData(){
 
-        Politician placeholder = new Politician("stew", "valorant player", "i keep changing my dpi accidently", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+        Politician placeholder = new Politician("stew", "should not nap", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
         politicianList.add(placeholder);
         politicianAdapter.notifyItemInserted(politicianList.size());
 
-        Politician placeholder2 = new Politician("troll", "valorant player", "really short player", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+        Politician placeholder2 = new Politician("troll", "oh ur my igl?", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
         politicianList.add(placeholder2);
         politicianAdapter.notifyItemInserted(politicianList.size());
 
-        Politician placeholder3 = new Politician("oli", "valorant player", "french canadian", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+        Politician placeholder3 = new Politician("oli", "french canadian", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
         politicianList.add(placeholder3);
         politicianAdapter.notifyItemInserted(politicianList.size());
 
-        Politician placeholder4 = new Politician("lou", "valorant player", "lineup nerd", "lol", "lol", "lol", "", "lol", "lol", "lol");
+        Politician placeholder4 = new Politician("lou", "lineup nerd", "CRWN", "lol", "lol", "lol", "", "lol", "lol", "lol");
         politicianList.add(placeholder4);
         politicianAdapter.notifyItemInserted(politicianList.size());
 
-        Politician placeholder5 = new Politician("ricky", "valorant player", "part time screaM", "", "lol", "lol", "lol", "lol", "lol", "lol");
+        Politician placeholder5 = new Politician("ricky", "part time screaM", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
         politicianList.add(placeholder5);
         politicianAdapter.notifyItemInserted(politicianList.size());
 
+        Politician placeholder6 = new Politician("prainex", "schrodingers coach", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
+        politicianList.add(placeholder6);
+        politicianAdapter.notifyItemInserted(politicianList.size());
+
+        Politician placeholder7 = new Politician("lero", "pokemon fanatic", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
+        politicianList.add(placeholder7);
+        politicianAdapter.notifyItemInserted(politicianList.size());
+
     }
+
+    private void determineLocation() {
+        // Check perm - if not then start the  request and return
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+            return;
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    // Got last known location. In some situations this can be null.
+                    if (location != null) {
+                        locationString = getPlace(location);
+                        address.setText(locationString);
+                    }
+                })
+                .addOnFailureListener(this, e ->
+                        Toast.makeText(MainActivity.this,
+                                e.getMessage(), Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_REQUEST) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    determineLocation();
+                } else {
+                    address.setText(R.string.deniedText);
+                }
+            }
+        }
+    }
+
+    private String getPlace(Location loc) {
+
+        StringBuilder sb = new StringBuilder();
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+
+        try {
+            addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            sb.append(String.format(
+                    Locale.getDefault(),
+                    "%s, %s",
+                    city, state, loc.getProvider(), loc.getLatitude(), loc.getLongitude()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+
 
 }
