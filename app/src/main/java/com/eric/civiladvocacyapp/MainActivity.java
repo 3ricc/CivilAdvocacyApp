@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,8 +22,17 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String locationString = "Unspecified Location";
 
     private TextView address;
+
+    private final String API_KEY = "AIzaSyCDPCMtfWRLS34FXwOlpp9hWZAtsLgRoz0";
+
+    private String url = "https://www.googleapis.com/civicinfo/v2/representatives";
+    private RequestQueue queue;
 
     //i typed this line on a laptop
 
@@ -69,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         address = findViewById(R.id.address_view);
         Log.d("wtf", politicianList.toString());
+
+
     }
 
     @Override
@@ -150,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (location != null) {
                         locationString = getPlace(location);
                         address.setText(locationString);
+                        downloadData(locationString);
                     }
                 })
                 .addOnFailureListener(this, e ->
@@ -194,6 +212,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         return sb.toString();
+    }
+
+    public void downloadData(String address){
+        queue = Volley.newRequestQueue(this);
+
+        Uri.Builder buildURL = Uri.parse(url).buildUpon();
+        buildURL.appendQueryParameter("key", API_KEY);
+        buildURL.appendQueryParameter("address", address);
+        String urlToUse = buildURL.build().toString();
+
+
+        Response.Listener<JSONObject> listener =
+                new Response.Listener<JSONObject>(){
+                    @Override
+                    public void onResponse(JSONObject response){
+                        try{
+                            Log.d("response",response.toString());
+                            parseJSON(response);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                };
+
+        Response.ErrorListener error = new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error){
+                try{
+                    JSONObject jsonObject = new JSONObject(new String(error.networkResponse.data));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        JsonObjectRequest jsonObjectRequest =
+                new JsonObjectRequest(Request.Method.GET, urlToUse, null, listener, error);
+
+        queue.add(jsonObjectRequest);
+
+
+
+        Log.d("url", urlToUse);
+
+    }
+
+    private void parseJSON(JSONObject json){
+
+        try {
+            JSONObject normalizedInput = json.getJSONObject("normalizedInput");
+            JSONArray offices = json.getJSONArray("offices");
+            JSONArray officials = json.getJSONArray("officials");
+            Log.d("normal", normalizedInput.toString());
+        }
+        catch (Exception e){
+
+        }
+
+
     }
 
 
