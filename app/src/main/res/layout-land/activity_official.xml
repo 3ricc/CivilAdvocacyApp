@@ -82,14 +82,14 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="11dp"
         android:layout_marginEnd="18dp"
         android:text="@string/address"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/official_info1_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/official_location" />
+        app:layout_constraintTop_toBottomOf="@id/official_title" />
 
     <TextView
         android:id="@+id/official_info1_desc"
@@ -117,7 +117,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/official_info2_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/official_info1_title" />
+        app:layout_constraintTop_toBottomOf="@id/official_info1_desc" />
 
     <TextView
         android:id="@+id/official_info2_desc"
@@ -126,7 +126,6 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="70dp"
-        android:onClick="onClick"
         android:text="TextView"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
@@ -146,7 +145,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/official_info3_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/official_info2_title" />
+        app:layout_constraintTop_toBottomOf="@id/official_info2_desc" />
 
     <TextView
         android:id="@+id/official_info3_desc"
@@ -174,7 +173,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/official_info4_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/official_info3_title" />
+        app:layout_constraintTop_toBottomOf="@id/official_info3_desc" />
 
     <TextView
         android:id="@+id/official_info4_desc"

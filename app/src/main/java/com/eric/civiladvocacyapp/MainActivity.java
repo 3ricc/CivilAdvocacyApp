@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //right back at you buddy
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(politicianAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        makeDummyData();
+        //makeDummyData();
 
         address = findViewById(R.id.address_view);
         Log.d("wtf", politicianList.toString());
@@ -268,12 +267,169 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             JSONArray offices = json.getJSONArray("offices");
             JSONArray officials = json.getJSONArray("officials");
             Log.d("normal", normalizedInput.toString());
+            Log.d("officies", offices.toString());
+            Log.d("offocials", officials.toString());
+
+            for(int i = 0; i < offices.length(); i++){
+                JSONObject office = offices.getJSONObject(i);
+                JSONArray indexes = office.getJSONArray("officialIndices");
+                Log.d("indexes", indexes.toString());
+
+                for(int h = 0; h < indexes.length(); h++){
+                    String officeTitle = office.getString("name");
+                    int num = indexes.getInt(h);
+                    JSONObject person = officials.getJSONObject(num);
+                    Log.d("person", person.toString());
+
+                    String name = person.getString("name");
+
+                    String address = "";
+                    try {
+                        JSONArray addressArray = person.getJSONArray("address");
+                        JSONObject addressObject = addressArray.getJSONObject(0);
+                        String line1 = "";
+                        String line2 = "";
+                        String line3 = "";
+                        String city = addressObject.getString("city");
+                        String state = addressObject.getString("state");
+                        String zip = addressObject.getString("zip");
+                        try{
+                            line1 = addressObject.getString("line1");
+                        }
+                        catch(Exception e){
+                        }
+
+                        try{
+                            line2 = addressObject.getString("line2");
+                        }
+                        catch(Exception e){
+
+                        }
+
+                        try{
+                            line3 = addressObject.getString("line3");
+                        }
+                        catch(Exception e){
+
+                        }
+
+                        if(line3.isEmpty()){
+                            if(line2.isEmpty()){
+                                address = line1 + " " + city + ", " + state + ", " + zip;
+                            }
+                            else{
+                                address = line1 + " " +line2 + " "+ city + ", " + state + ", " + zip;
+                            }
+                        }
+                        else{
+                            address = line1 + " " + line2 + "" + line3 + " " + city + ", " + state + ", " + zip;
+                        }
+
+                    }
+                    catch (Exception e){
+
+                    }
+
+                    String party = "";
+                    try{
+                        party = person.getString("party");
+                    }
+                    catch (Exception e){
+                        party = "Unknown";
+                    }
+
+                    //Log.d("party", party);
+
+                    String photoUrl = "";
+                    try {
+                        photoUrl = person.getString("photoUrl");
+                    }
+                    catch (Exception e){
+                        photoUrl = "placeholder";
+                    }
+
+                    String number = "";
+                    try{
+                        JSONArray numbers = person.getJSONArray("phones");
+                        number = numbers.getString(0);
+                    }
+                    catch (Exception e){
+
+                    }
+
+                    //Log.d("number", number);
+
+                    String urls = "";
+                    try{
+                        JSONArray urlsList = person.getJSONArray("urls");
+                        urls = urlsList.getString(0);
+                    }
+                    catch (Exception e){
+
+                    }
+
+                    //Log.d("url", urls);
+
+                    String email = "";
+                    try{
+                        JSONArray emails = person.getJSONArray("emails");
+                        email = emails.getString(0);
+                    }
+                    catch (Exception e){
+
+                    }
+                    //Log.d("email", email);
+
+
+                    String facebookLink = "";
+                    String twitterLink = "";
+                    String youtubeLink = "";
+                    try {
+                       JSONArray channels = person.getJSONArray("channels");
+                       for(int x = 0; x < channels.length(); x++){
+                           JSONObject linkObject = channels.getJSONObject(x);
+                           String type = linkObject.getString("type");
+                           if (type.equals("Facebook")){
+                               facebookLink = linkObject.getString("id");
+                           }
+                           if (type.equals("Twitter")){
+                               twitterLink = linkObject.getString("id");
+                           }
+                           if (type.equals("YouTube")){
+                               youtubeLink = linkObject.getString("id");
+                           }
+                       }
+                    }
+                    catch (Exception e){
+                    }
+
+                    //Log.d("facebook", facebookLink);
+                    //Log.d("twitter", twitterLink);
+                    //Log.d("youtube", youtubeLink);
+
+                    Politician p = new Politician(name, officeTitle, party, address, number, email, urls, facebookLink, twitterLink, youtubeLink);
+                    updateList(p);
+
+                    Log.d("politician", p.toString());
+
+
+                }// end of for loop for each person
+
+
+
+            }// end of for loop for each office
+
         }
         catch (Exception e){
-
+            Log.d("exception", "exception occured");
         }
 
 
+    }
+
+    public void updateList(Politician p){
+        politicianList.add(p);
+        politicianAdapter.notifyItemInserted(politicianList.size());
     }
 
 

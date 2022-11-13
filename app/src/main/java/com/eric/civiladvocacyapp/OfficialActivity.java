@@ -72,6 +72,7 @@ public class OfficialActivity extends AppCompatActivity {
 
 
 
+
             //setting the listeners here
             if(!person.getFacebookLink().isEmpty()){
                 facebook.setOnClickListener(new View.OnClickListener() {
