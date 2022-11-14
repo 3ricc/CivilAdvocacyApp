@@ -11,4 +11,6 @@
     <string name="website">Website:</string>
     <string name="email">Email:</string>
     <string name="deniedText">Location Services Permission Denied</string>
+    <string name="noNetworkTitle">No Network Connection</string>
+    <string name="noNetworkBody">Data cannot be accessed/loaded with an internet connection.</string>
 </resources>

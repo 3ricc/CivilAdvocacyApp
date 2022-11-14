@@ -1,11 +1,17 @@
 package com.eric.civiladvocacyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class PhotoActivity extends AppCompatActivity {
 
@@ -14,6 +20,8 @@ public class PhotoActivity extends AppCompatActivity {
     private TextView office;
     private ImageView image;
     private ImageView icon;
+
+    private ConstraintLayout mConstraintLayout;
 
     private Politician person;
 
@@ -27,6 +35,7 @@ public class PhotoActivity extends AppCompatActivity {
         office = findViewById(R.id.photo_office);
         image = findViewById(R.id.photo_image);
         icon = findViewById(R.id.photo_party_icon);
+        mConstraintLayout = findViewById(R.id.photo_layout);
 
         Intent intent = getIntent();
         if(intent.hasExtra("POLITICIAN")){
@@ -34,10 +43,37 @@ public class PhotoActivity extends AppCompatActivity {
             name.setText(person.getName());
             office.setText(person.getOffice());
 
+            if(person.getParty().equals("Democratic Party")){
+                int iconResId = getResources().getIdentifier("dem_logo", "drawable", getPackageName());
+                mConstraintLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
+                icon.setImageResource(iconResId);
+            }
+            else if(person.getParty().equals("Republican Party")){
+                int iconResId = getResources().getIdentifier("rep_logo", "drawable", getPackageName());
+                mConstraintLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.red));
+                icon.setImageResource(iconResId);
+            }
+            else{
+
+            }
+
+
             Bundle extras = intent.getExtras();
             if(extras != null){
                 location.setText(extras.getString("LOCATION"));
             }
+
+            Picasso.get().load(person.getPhotoUrl()).placeholder(R.drawable.missing).error(R.drawable.brokenimage).into(image, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Log.d("success", "downloaded photo!");
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.d("fail", "onError: " + e);
+                }
+            });
 
         }
 

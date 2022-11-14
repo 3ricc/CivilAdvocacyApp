@@ -8,17 +8,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PoliticianAdapter politicianAdapter;
     private final ArrayList<Politician> politicianList = new ArrayList<>();
 
+    private TextView networkTitle;
+    private TextView networkBody;
+
     private FusedLocationProviderClient mFusedLocationClient;
 
     private static final int LOCATION_REQUEST = 111;
@@ -71,18 +81,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        determineLocation();
+        networkTitle = findViewById(R.id.noNetworkTitle);
+        networkBody = findViewById(R.id.noNetworkBody);
+
+        networkBody.setVisibility(View.GONE);
+        networkTitle.setVisibility(View.GONE);
 
         recyclerView = findViewById(R.id.politicianView);
-        politicianAdapter = new PoliticianAdapter(politicianList , this);
+        politicianAdapter = new PoliticianAdapter(politicianList, this);
         recyclerView.setAdapter(politicianAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        //makeDummyData();
+        if(hasNetworkConnection()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            determineLocation();
 
-        address = findViewById(R.id.address_view);
-        Log.d("wtf", politicianList.toString());
+            //makeDummyData();
+
+            address = findViewById(R.id.address_view);
+            Log.d("wtf", politicianList.toString());
+        }
+        else{
+            recyclerView.setVisibility(View.GONE);
+            networkBody.setVisibility(View.VISIBLE);
+            networkTitle.setVisibility(View.VISIBLE);
+        }
 
 
     }
@@ -101,7 +125,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 return true;
             case R.id.searchOption:
-                //DIALOG SHIT HERE
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                final EditText et = new EditText(this);
+                et.setInputType(InputType.TYPE_CLASS_TEXT);
+                et.setGravity(Gravity.CENTER_HORIZONTAL);
+                builder.setView(et);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        downloadData(et.getText().toString());
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+                builder.setTitle("Enter Address");
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -120,37 +166,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void makeDummyData(){
-
-        Politician placeholder = new Politician("stew", "should not nap", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder2 = new Politician("troll", "oh ur my igl?", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder2);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder3 = new Politician("oli", "french canadian", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder3);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder4 = new Politician("lou", "lineup nerd", "CRWN", "lol", "lol", "lol", "", "lol", "lol", "lol");
-        politicianList.add(placeholder4);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder5 = new Politician("ricky", "part time screaM", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder5);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder6 = new Politician("prainex", "schrodingers coach", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder6);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-        Politician placeholder7 = new Politician("lero", "pokemon fanatic", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
-        politicianList.add(placeholder7);
-        politicianAdapter.notifyItemInserted(politicianList.size());
-
-    }
+//    private void makeDummyData(){
+//
+//        Politician placeholder = new Politician("stew", "should not nap", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder2 = new Politician("troll", "oh ur my igl?", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder2);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder3 = new Politician("oli", "french canadian", "CRWN", "lol", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder3);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder4 = new Politician("lou", "lineup nerd", "CRWN", "lol", "lol", "lol", "", "lol", "lol", "lol");
+//        politicianList.add(placeholder4);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder5 = new Politician("ricky", "part time screaM", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder5);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder6 = new Politician("prainex", "schrodingers coach", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder6);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//        Politician placeholder7 = new Politician("lero", "pokemon fanatic", "CRWN", "", "lol", "lol", "lol", "lol", "lol", "lol");
+//        politicianList.add(placeholder7);
+//        politicianAdapter.notifyItemInserted(politicianList.size());
+//
+//    }
 
     private void determineLocation() {
         // Check perm - if not then start the  request and return
@@ -165,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Got last known location. In some situations this can be null.
                     if (location != null) {
                         locationString = getPlace(location);
-                        address.setText(locationString);
+                        //address.setText(locationString);
                         downloadData(locationString);
                     }
                 })
@@ -214,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void downloadData(String address){
+        politicianList.clear();
         queue = Volley.newRequestQueue(this);
 
         Uri.Builder buildURL = Uri.parse(url).buildUpon();
@@ -255,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         queue.add(jsonObjectRequest);
 
 
-
         Log.d("url", urlToUse);
 
     }
@@ -264,22 +310,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             JSONObject normalizedInput = json.getJSONObject("normalizedInput");
+            if (!normalizedInput.getString("line1").isEmpty())
+                address.setText(normalizedInput.getString("line1") + ", " + normalizedInput.getString("city") + ", " + normalizedInput.getString("state") + ", " + normalizedInput.getString("zip"));
+            else if(normalizedInput.getString("line1").isEmpty()){
+                if(normalizedInput.getString("zip").isEmpty()){
+                    address.setText(normalizedInput.getString("city") + ", " + normalizedInput.getString("state"));
+                }
+                else{
+                    address.setText(normalizedInput.getString("line1") + ", " + normalizedInput.getString("city") + ", " + normalizedInput.getString("state"));
+                }
+            }
             JSONArray offices = json.getJSONArray("offices");
             JSONArray officials = json.getJSONArray("officials");
-            Log.d("normal", normalizedInput.toString());
-            Log.d("officies", offices.toString());
-            Log.d("offocials", officials.toString());
+            //Log.d("normal", normalizedInput.toString());
+            //Log.d("officies", offices.toString());
+            //Log.d("offocials", officials.toString());
 
             for(int i = 0; i < offices.length(); i++){
                 JSONObject office = offices.getJSONObject(i);
                 JSONArray indexes = office.getJSONArray("officialIndices");
-                Log.d("indexes", indexes.toString());
+                //Log.d("indexes", indexes.toString());
 
                 for(int h = 0; h < indexes.length(); h++){
                     String officeTitle = office.getString("name");
                     int num = indexes.getInt(h);
                     JSONObject person = officials.getJSONObject(num);
-                    Log.d("person", person.toString());
+                    //Log.d("person", person.toString());
 
                     String name = person.getString("name");
 
@@ -322,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         else{
-                            address = line1 + " " + line2 + "" + line3 + " " + city + ", " + state + ", " + zip;
+                            address = line1 + " " + line2 + " " + line3 + " " + city + ", " + state + ", " + zip;
                         }
 
                     }
@@ -345,7 +401,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         photoUrl = person.getString("photoUrl");
                     }
                     catch (Exception e){
-                        photoUrl = "placeholder";
                     }
 
                     String number = "";
@@ -407,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //Log.d("twitter", twitterLink);
                     //Log.d("youtube", youtubeLink);
 
-                    Politician p = new Politician(name, officeTitle, party, address, number, email, urls, facebookLink, twitterLink, youtubeLink);
+                    Politician p = new Politician(name, officeTitle, party, address, number, email, urls, facebookLink, twitterLink, youtubeLink, photoUrl);
                     updateList(p);
 
                     Log.d("politician", p.toString());
@@ -430,6 +485,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void updateList(Politician p){
         politicianList.add(p);
         politicianAdapter.notifyItemInserted(politicianList.size());
+    }
+
+    private boolean hasNetworkConnection() {
+        ConnectivityManager connectivityManager = getSystemService(ConnectivityManager.class);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
 

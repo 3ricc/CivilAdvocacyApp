@@ -1,11 +1,14 @@
 package com.eric.civiladvocacyapp;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -34,13 +37,40 @@ public class PoliticianAdapter extends RecyclerView.Adapter<PoliticianViewHolder
     public void onBindViewHolder(@NonNull PoliticianViewHolder holder, int position) {
         Politician person = pList.get(position);
         holder.office.setText(person.getOffice());
-        holder.name.setText(person.getName());
-        //holder.image.setImageResource(0); //FIX THIS SHIT
+
+        String party = "";
+        if(person.getParty().equals("Democratic Party")){
+            party = "(Democratic Party)";
+        }
+        else if (person.getParty().equals("Republican Party")){
+            party = "(Republican Party)";
+        }
+        else{
+            party = "(Unknown Party)";
+        }
+
+        holder.name.setText(person.getName() + " " + party);
+        if(!person.getPhotoUrl().isEmpty()) {
+            Log.d("downloading", "image");
+            Picasso.get().load(person.getPhotoUrl()).placeholder(R.drawable.missing).error(R.drawable.brokenimage).into(holder.image);
+        }
 
     }
 
     @Override
     public int getItemCount() {
         return pList.size();
+    }
+
+
+    //So i had a really weird issue that my images were duplicating, and after doing some googling online apparently you need to override these methods..
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

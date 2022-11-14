@@ -2,6 +2,8 @@ package com.eric.civiladvocacyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +17,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void onClick(View v){
-        //THIS NEEDS TO BE A CLICKABLE LINK DO THIS
-        Log.d("click", "clicked me!");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://developers.google.com/civic-information/"));
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 }

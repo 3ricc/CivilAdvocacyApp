@@ -62,7 +62,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo_office"
-        app:srcCompat="@drawable/brokenimage" />
+        app:srcCompat="@drawable/missing" />
 
     <ImageView
         android:id="@+id/photo_party_icon"

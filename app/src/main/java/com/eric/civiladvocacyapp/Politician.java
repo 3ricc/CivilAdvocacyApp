@@ -14,8 +14,9 @@ public class Politician implements Serializable {
     private String facebookLink;
     private String twitterLink;
     private String youtubeLink;
+    private String photoUrl;
 
-    public Politician(String name, String office, String party, String address, String phone, String email, String website, String facebookLink, String twitterLink, String youtubeLink) {
+    public Politician(String name, String office, String party, String address, String phone, String email, String website, String facebookLink, String twitterLink, String youtubeLink, String photoUrl) {
         this.name = name;
         this.office = office;
         this.party = party;
@@ -26,6 +27,7 @@ public class Politician implements Serializable {
         this.facebookLink = facebookLink;
         this.twitterLink = twitterLink;
         this.youtubeLink = youtubeLink;
+        this.photoUrl = photoUrl;
     }
 
 
@@ -39,6 +41,7 @@ public class Politician implements Serializable {
     public String getFacebookLink() { return facebookLink; }
     public String getTwitterLink() { return twitterLink; }
     public String getYoutubeLink() { return youtubeLink; }
+    public String getPhotoUrl() { return photoUrl; }
 
     public void setName(String name) { this.name = name; }
     public void setOffice(String office) { this.office = office; }
@@ -64,6 +67,7 @@ public class Politician implements Serializable {
                 ", facebookLink='" + facebookLink + '\'' +
                 ", twitterLink='" + twitterLink + '\'' +
                 ", youtubeLink='" + youtubeLink + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
                 '}';
     }
 }

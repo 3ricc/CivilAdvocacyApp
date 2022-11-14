@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo_location"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/brokenimage" />
+        app:srcCompat="@drawable/missing" />
 
     <ImageView
         android:id="@+id/photo_party_icon"
