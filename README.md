@@ -19,7 +19,7 @@ You can change your location by hitting the search icon and it will refresh the 
 
 <img src=https://user-images.githubusercontent.com/39806252/231008750-649d2ca4-1201-45d1-9b17-8e0f04d9b63c.png width="400" height="889">
 
-<img src=https://user-images.githubusercontent.com/39806252/231008747-eca951ee-c8c9-4bd0-ab82-24ffdbf0417f width="400" height="889">
+<img src=https://user-images.githubusercontent.com/39806252/231008747-eca951ee-c8c9-4bd0-ab82-24ffdbf0417f.png width="400" height="889">
 
 
 
