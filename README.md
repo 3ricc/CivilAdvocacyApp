@@ -1,7 +1,7 @@
 # CivilAdvocacyApp
 Application created in Android Studio that tracks politicians relative to your location. Works for both portrait mode and landscape mode.
 
-<img src =https://user-images.githubusercontent.com/39806252/231008774-bcb971d1-23af-4410-8010-23c4cedb81f1.png>
+<img src =https://user-images.githubusercontent.com/39806252/231008774-bcb971d1-23af-4410-8010-23c4cedb81f1.png width="400" height="889">
 
 Tapping on a politician will open a new activity that details their information that is called from an API
 
