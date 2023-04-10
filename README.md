@@ -15,7 +15,7 @@ Tapping on their picture will open up a new activity for a bigger sized picture
 
 You can change your location by hitting the search icon and it will refresh the lists of politicians from that location instead
 
-![image](https://user-images.githubusercontent.com/39806252/231008753-8a229dc1-0820-4466-ac42-bd3fb9688a8c.png)
+![image](https://user-images.githubusercontent.com/39806252/231008753-8a229dc1-0820-4466-ac42-bd3fb9688a8c.png =400x889)
 
 ![image](https://user-images.githubusercontent.com/39806252/231008750-649d2ca4-1201-45d1-9b17-8e0f04d9b63c.png)
 
